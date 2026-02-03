@@ -72,7 +72,8 @@ export enum ViewMode {
   // Shared/Tools
   CHEAT_SHEET = 'CHEAT_SHEET',
   HOMEWORK = 'HOMEWORK', // Renamed from EXERCISES
-  FINAL_EXAM = 'FINAL_EXAM'
+  FINAL_EXAM = 'FINAL_EXAM',
+  AI_CHAT = 'AI_CHAT'
 }
 
 export interface MatrixProps {

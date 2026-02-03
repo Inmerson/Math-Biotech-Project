@@ -36,6 +36,7 @@ import { DiffEq3DView } from './views/DiffEq3DView';
 import { CheatSheetView } from './views/CheatSheetView';
 import { LinearTransformation3DView } from './views/LinearTransformation3DView';
 import { VectorOperations3DView } from './views/VectorOperations3DView';
+import { AIChatView } from './views/AIChatView';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, FileText, Lock } from 'lucide-react';
 import { usePersistedState } from './utils/usePersistedState';
@@ -147,6 +148,7 @@ const App: React.FC = () => {
       case ViewMode.HOMEWORK: return <HomeworkView key={currentModule} module={currentModule} />;
       case ViewMode.FINAL_EXAM: return <FinalExamView key={currentModule} module={currentModule} />;
       case ViewMode.CHEAT_SHEET: return <CheatSheetView key={currentModule} module={currentModule} />;
+      case ViewMode.AI_CHAT: return <AIChatView />;
       default: return <BasicsView />;
     }
   };

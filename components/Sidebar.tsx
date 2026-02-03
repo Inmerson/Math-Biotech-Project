@@ -6,7 +6,7 @@ import {
   BookOpen, Calculator, Grid3X3, Sigma, GitGraph, 
   TrendingUp, Activity, Library, ArrowLeft, Infinity, GraduationCap, Divide, LineChart, Dna,
   Unplug, Layers, Atom, Shuffle, Move, Target, Waves, FileText, X, Menu, AreaChart, History, Variable, Microscope, Sprout, Timer, Box,
-  Cylinder, Globe, ArrowUpRight, PieChart
+  Cylinder, Globe, ArrowUpRight, PieChart, Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -25,6 +25,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, currentModule, se
     const commonTools = [
       { type: 'header', label: 'Academic Tools' },
       { id: ViewMode.CHEAT_SHEET, label: 'Cheat Sheet', icon: FileText },
+      { id: ViewMode.AI_CHAT, label: 'AI Asistan', icon: Sparkles },
       { id: ViewMode.HOMEWORK, label: 'Homework Exercises', icon: Library },
       { id: ViewMode.FINAL_EXAM, label: 'Module Test', icon: GraduationCap },
     ];
