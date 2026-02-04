@@ -51,11 +51,38 @@ export const getDeterminant = (m: MatrixData): number | null => {
   if (n === 1) return m[0][0];
   if (n === 2) return m[0][0] * m[1][1] - m[0][1] * m[1][0];
 
-  // Simple recursion for example (Laplace expansion on row 0)
-  let det = 0;
-  for (let j = 0; j < n; j++) {
-    det += Math.pow(-1, j) * m[0][j] * getDeterminant(getMinor(m, 0, j))!;
+  // Gaussian elimination (O(N^3))
+  const tempM = m.map(row => [...row]); // Copy matrix to avoid side effects
+  let det = 1;
+
+  for (let i = 0; i < n; i++) {
+    // Pivot
+    let pivotIdx = i;
+    for (let j = i + 1; j < n; j++) {
+      if (Math.abs(tempM[j][i]) > Math.abs(tempM[pivotIdx][i])) {
+        pivotIdx = j;
+      }
+    }
+
+    // Swap rows if needed
+    if (pivotIdx !== i) {
+      [tempM[i], tempM[pivotIdx]] = [tempM[pivotIdx], tempM[i]];
+      det *= -1;
+    }
+
+    if (Math.abs(tempM[i][i]) < 1e-10) return 0; // Singular matrix
+
+    det *= tempM[i][i];
+
+    // Elimination
+    for (let j = i + 1; j < n; j++) {
+      const factor = tempM[j][i] / tempM[i][i];
+      for (let k = i; k < n; k++) {
+        tempM[j][k] -= factor * tempM[i][k];
+      }
+    }
   }
+
   return det;
 };
 
