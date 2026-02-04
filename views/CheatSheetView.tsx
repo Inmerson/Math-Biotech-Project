@@ -3,7 +3,7 @@
 import React from 'react';
 import { ModuleType } from '../types';
 import { motion } from 'framer-motion';
-import { FileText, Sigma, Divide, TrendingUp, Activity, Grid3X3, Infinity, Calculator, PenTool, Braces, AreaChart } from 'lucide-react';
+import { FileText, Sigma, Divide, TrendingUp, Activity, Grid3X3, Infinity, Calculator, PenTool, Braces, AreaChart, Layers } from 'lucide-react';
 import { MathRenderer } from '../components/MathRenderer';
 
 interface CheatSheetSection {
@@ -303,6 +303,40 @@ export const CheatSheetView: React.FC<{ module: ModuleType }> = ({ module }) => 
                     items: [
                         { label: 'Under Curve', formula: 'S = \\int_a^b f(x)dx', note: 'If f(x) ≥ 0' },
                         { label: 'Between Curves', formula: 'S = \\int_a^b (f(x) - g(x))dx', note: 'If f(x) ≥ g(x)' }
+                    ]
+                }
+            ]
+        };
+      case ModuleType.DIFF_EQ:
+        return {
+            color: 'text-indigo-400',
+            icon: Layers,
+            sections: [
+                {
+                    title: 'First Order ODEs',
+                    items: [
+                        { label: 'Separable', formula: '\\frac{dy}{dx} = g(x)h(y) \\implies \\int \\frac{dy}{h(y)} = \\int g(x)dx', note: '' },
+                        { label: 'Linear', formula: '\\frac{dy}{dx} + P(x)y = Q(x)', note: 'Use Integrating Factor' },
+                        { label: 'Integrating Factor', formula: 'I(x) = e^{\\int P(x)dx}', note: 'Multiply eq by I(x)' },
+                        { label: 'Solution (Linear)', formula: 'y = \\frac{1}{I(x)} \\int I(x)Q(x)dx', note: '' }
+                    ]
+                },
+                {
+                    title: 'Second Order Linear',
+                    items: [
+                        { label: 'Homogeneous', formula: 'ay\'\' + by\' + cy = 0', note: 'Const coeffs' },
+                        { label: 'Characteristic Eq', formula: 'ar^2 + br + c = 0', note: 'Find roots r1, r2' },
+                        { label: 'Distinct Roots', formula: 'y = C_1 e^{r_1 x} + C_2 e^{r_2 x}', note: 'Δ > 0' },
+                        { label: 'Repeated Roots', formula: 'y = C_1 e^{rx} + C_2 x e^{rx}', note: 'Δ = 0' },
+                        { label: 'Complex Roots', formula: 'y = e^{\\alpha x}(C_1 \\cos \\beta x + C_2 \\sin \\beta x)', note: 'r = α ± iβ' }
+                    ]
+                },
+                {
+                    title: 'Modeling',
+                    items: [
+                        { label: 'Exponential Growth', formula: '\\frac{dP}{dt} = kP \\implies P(t) = P_0 e^{kt}', note: 'k > 0' },
+                        { label: 'Decay', formula: '\\frac{dN}{dt} = -\\lambda N \\implies N(t) = N_0 e^{-\\lambda t}', note: 'Half-life relation' },
+                        { label: 'Logistic Growth', formula: '\\frac{dP}{dt} = rP(1 - \\frac{P}{K})', note: 'K is carrying capacity' }
                     ]
                 }
             ]

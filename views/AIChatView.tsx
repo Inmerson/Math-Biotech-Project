@@ -17,7 +17,7 @@ export const AIChatView: React.FC = () => {
   const [input, setInput] = useState('');
   const [showSettings, setShowSettings] = useState(!localStorage.getItem(STORAGE_KEY));
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', role: 'model', text: 'Merhaba! Ben Math Biotech Asistanı. 🧬\n\nMatematik sorularını çözebilirim veya biyolojik kavramları açıklayabilirim. Nasıl yardımcı olabilirim?' }
+    { id: '1', role: 'model', text: 'Hello! I am your Math Biotech Assistant. 🧬\n\nI can solve math problems or explain biological concepts. How can I help you today?' }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ export const AIChatView: React.FC = () => {
       localStorage.setItem(STORAGE_KEY, apiKey.trim());
       setShowSettings(false);
     } else {
-      alert("Geçerli bir Google Gemini API anahtarı giriniz (AIza... ile başlar).");
+      alert("Please enter a valid Google Gemini API Key (starts with AIza...).");
     }
   };
 
@@ -41,30 +41,27 @@ export const AIChatView: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const genAI = new GoogleGenAI({ apiKey }); // Assuming v2 SDK structure or similar wrapper
-      // Fallback for direct REST if SDK differs
-      // Using simple fetch for robustness without installing huge SDKs if not present
-      
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: `Sen bir Matematik ve Biyoteknoloji uzmanısın. Soruları adım adım, formüllerle ve biyolojik örneklerle açıkla.\n\nSoru: ${userMsg}` }] }]
-        })
+      const ai = new GoogleGenAI({ apiKey });
+      const response = await ai.models.generateContent({
+        model: "gemini-1.5-flash",
+        contents: [
+            { role: 'user', parts: [{ text: `You are an expert in Mathematics and Biotechnology. Explain questions step-by-step with formulas and biological examples where applicable.\n\nQuestion: ${userMsg}` }] }
+        ]
       });
 
-      const data = await response.json();
+      const text = response.text;
       
-      if (data.error) {
-        throw new Error(data.error.message);
+      if (!text) {
+        throw new Error("No response generated.");
       }
 
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Bir cevap oluşturulamadı.";
-      
-      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: reply }]);
+      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: text }]);
 
     } catch (error: any) {
-      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: `⚠️ Hata: ${error.message}` }]);
+      console.error("AI Error:", error);
+      let errorMessage = error.message || "An error occurred.";
+      if (errorMessage.includes("403")) errorMessage = "Invalid API Key or quota exceeded.";
+      setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: `⚠️ Error: ${errorMessage}` }]);
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +81,7 @@ export const AIChatView: React.FC = () => {
             <Sparkles className="text-white w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white tracking-tight">AI Asistan</h2>
+            <h2 className="text-2xl font-bold text-white tracking-tight">AI Assistant</h2>
             <p className="text-slate-400 text-xs font-mono uppercase tracking-wider">Powered by Gemini</p>
           </div>
         </div>
@@ -101,11 +98,11 @@ export const AIChatView: React.FC = () => {
         <div className="mb-6 p-6 bg-slate-900/80 border border-slate-700 rounded-2xl animate-in fade-in slide-in-from-top-4">
           <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <Key className="text-yellow-500 w-5 h-5" />
-            API Anahtarı Ayarı
+            API Key Setup
           </h3>
           <p className="text-sm text-slate-400 mb-4">
-            AI özelliklerini kullanmak için kendi <strong>Google Gemini API</strong> anahtarınızı giriniz.
-            Anahtar sadece tarayıcınızda saklanır.
+            To use AI features, please enter your own <strong>Google Gemini API Key</strong>.
+            Your key is stored locally in your browser.
           </p>
           <div className="flex gap-2">
             <input 
@@ -119,12 +116,12 @@ export const AIChatView: React.FC = () => {
               onClick={saveApiKey}
               className="bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-3 rounded-xl font-bold transition-colors"
             >
-              Kaydet
+              Save
             </button>
           </div>
           <p className="text-[10px] text-slate-500 mt-3 flex items-center gap-1">
             <AlertTriangle size={12} />
-            Lütfen anahtarınızı kimseyle paylaşmayın.
+            Please keep your API key secure.
           </p>
         </div>
       )}
@@ -153,7 +150,7 @@ export const AIChatView: React.FC = () => {
             <div className="flex justify-start">
               <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-tl-none p-4 flex items-center gap-2">
                 <Bot className="w-4 h-4 text-cyan-400 animate-bounce" />
-                <span className="text-xs text-slate-400">Düşünüyor...</span>
+                <span className="text-xs text-slate-400">Thinking...</span>
               </div>
             </div>
           )}
@@ -170,7 +167,7 @@ export const AIChatView: React.FC = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Matematik sorusu veya konu sor..."
+                placeholder="Ask a math question or topic..."
                 className="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-sm font-medium"
                 disabled={isLoading}
               />
