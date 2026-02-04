@@ -13,9 +13,9 @@ interface Message {
 const STORAGE_KEY = 'inmersion_ai_key';
 
 export const AIChatView: React.FC = () => {
-  const [apiKey, setApiKey] = useState(localStorage.getItem(STORAGE_KEY) || '');
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem(STORAGE_KEY) || '');
   const [input, setInput] = useState('');
-  const [showSettings, setShowSettings] = useState(!localStorage.getItem(STORAGE_KEY));
+  const [showSettings, setShowSettings] = useState(() => !localStorage.getItem(STORAGE_KEY));
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', role: 'model', text: 'Merhaba! Ben Math Biotech Asistanı. 🧬\n\nMatematik sorularını çözebilirim veya biyolojik kavramları açıklayabilirim. Nasıl yardımcı olabilirim?' }
   ]);
