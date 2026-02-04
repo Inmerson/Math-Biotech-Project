@@ -25,7 +25,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, currentModule, se
     const commonTools = [
       { type: 'header', label: 'Academic Tools' },
       { id: ViewMode.CHEAT_SHEET, label: 'Cheat Sheet', icon: FileText },
-      { id: ViewMode.AI_CHAT, label: 'AI Asistan', icon: Sparkles },
+      { id: ViewMode.AI_CHAT, label: 'AI Assistant', icon: Sparkles },
       { id: ViewMode.HOMEWORK, label: 'Homework Exercises', icon: Library },
       { id: ViewMode.FINAL_EXAM, label: 'Module Test', icon: GraduationCap },
     ];
