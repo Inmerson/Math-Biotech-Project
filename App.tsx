@@ -37,13 +37,14 @@ import { CheatSheetView } from './views/CheatSheetView';
 import { LinearTransformation3DView } from './views/LinearTransformation3DView';
 import { VectorOperations3DView } from './views/VectorOperations3DView';
 import { AIChatView } from './views/AIChatView';
+import { AnimatedBackground } from './components/AnimatedBackground'; // Imported
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, FileText, Lock } from 'lucide-react';
+import { Menu, Lock } from 'lucide-react';
 import { usePersistedState } from './utils/usePersistedState';
 
 const EmptyExamView: React.FC<{ title: string }> = ({ title }) => (
   <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
-    <div className="p-6 bg-slate-900/50 rounded-full border border-slate-800 shadow-xl">
+    <div className="p-6 bg-slate-900/50 rounded-full border border-slate-800 shadow-xl backdrop-blur-sm">
       <Lock size={48} className="text-slate-600" />
     </div>
     <div className="space-y-2">
@@ -88,8 +89,6 @@ const App: React.FC = () => {
   };
 
   const renderView = () => {
-    // We use 'key' prop in some views to ensure the component remounts 
-    // and hooks re-initialize when switching contexts (e.g. different exams)
     switch (view) {
       // Matrix
       case ViewMode.BASICS: return <BasicsView />;
@@ -153,63 +152,58 @@ const App: React.FC = () => {
     }
   };
 
-  // If we are at Home, show Dashboard
-  if (currentModule === ModuleType.HOME) {
-    return <DashboardView onSelectModule={handleModuleSelect} />;
-  }
-
-  // Otherwise show the Module Interface
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-200 font-sans selection:bg-cyan-500/30 overflow-hidden">
+    <div className="relative min-h-screen bg-background text-slate-200 font-sans selection:bg-accent-cyan/30 overflow-hidden">
       
-      <Sidebar 
-        currentView={view} 
-        currentModule={currentModule}
-        setView={setView} 
-        goHome={handleGoHome}
-        isOpen={isMobileMenuOpen}
-        toggleSidebar={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      />
-      
-      <main className="md:ml-72 p-4 md:p-6 min-h-screen relative">
-        {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between mb-6">
-            <button 
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="p-2 bg-slate-800 rounded-lg text-white border border-slate-700"
-            >
-                <Menu size={24} />
-            </button>
-            <span className="text-sm font-bold text-slate-400 tracking-widest uppercase">{currentModule.replace('_',' ')}</span>
-        </div>
+      {/* Global Animated Background */}
+      <AnimatedBackground />
 
-        {/* Background Layers */}
-        <div className="fixed inset-0 z-0 pointer-events-none">
-            {/* Noise Texture */}
-            <div className="absolute inset-0 bg-noise opacity-[0.04] mix-blend-overlay"></div>
+      <div className="relative z-10">
+        {currentModule === ModuleType.HOME ? (
+          <DashboardView onSelectModule={handleModuleSelect} />
+        ) : (
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar
+                currentView={view}
+                currentModule={currentModule}
+                setView={setView}
+                goHome={handleGoHome}
+                isOpen={isMobileMenuOpen}
+                toggleSidebar={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
             
-            {/* Ambient Glows - Updated to match Dashboard Theme (Cyan/Purple) */}
-            <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-cyan-900/10 rounded-full blur-[120px] opacity-40" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[900px] h-[900px] bg-purple-900/10 rounded-full blur-[120px] opacity-40" />
-            
-             {/* Floating Elements - Animation removed */}
-            <div className="absolute top-[20%] right-[20%] w-[300px] h-[300px] bg-indigo-900/5 rounded-full blur-3xl opacity-30" />
-        </div>
+            <main className="flex-1 md:ml-20 lg:ml-0 overflow-y-auto h-full relative">
+                {/* Mobile Header */}
+                <div className="md:hidden sticky top-0 z-30 flex items-center justify-between p-4 bg-background/80 backdrop-blur-md border-b border-white/5">
+                    <button
+                        onClick={() => setIsMobileMenuOpen(true)}
+                        className="p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+                    >
+                        <Menu size={24} />
+                    </button>
+                    <span className="text-xs font-bold text-accent-cyan tracking-widest uppercase glow-text">
+                        {currentModule.replace('_',' ')}
+                    </span>
+                    <div className="w-10" /> {/* Spacer */}
+                </div>
 
-        <div className="relative z-10 max-w-[1400px] mx-auto pt-2 pb-16">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={view}
-              initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-            >
-              {renderView()}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </main>
+                <div className="max-w-[1600px] mx-auto p-4 md:p-8 pb-32">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={view}
+                            initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                            exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
+                        >
+                            {renderView()}
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </main>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
