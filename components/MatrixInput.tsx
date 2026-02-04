@@ -44,27 +44,27 @@ export const MatrixInput: React.FC<MatrixProps> = ({
   };
 
   const themes = {
-    blue:   { text: 'text-blue-100',   focus: 'focus:bg-blue-500/20 focus:shadow-[0_0_20px_-5px_rgba(59,130,246,0.5)]',   bracket: '#60a5fa' },
-    green:  { text: 'text-emerald-100', focus: 'focus:bg-emerald-500/20 focus:shadow-[0_0_20px_-5px_rgba(16,185,129,0.5)]', bracket: '#34d399' },
-    purple: { text: 'text-purple-100',  focus: 'focus:bg-purple-500/20 focus:shadow-[0_0_20px_-5px_rgba(168,85,247,0.5)]',  bracket: '#c084fc' },
-    orange: { text: 'text-cyan-100',    focus: 'focus:bg-cyan-500/20 focus:shadow-[0_0_20px_-5px_rgba(34,211,238,0.5)]',    bracket: '#22d3ee' }, // Mapped to cyan for neon look
-    pink:   { text: 'text-pink-100',    focus: 'focus:bg-pink-500/20 focus:shadow-[0_0_20px_-5px_rgba(236,72,153,0.5)]',    bracket: '#f472b6' },
-    red:    { text: 'text-fuchsia-100', focus: 'focus:bg-fuchsia-500/20 focus:shadow-[0_0_20px_-5px_rgba(217,70,239,0.5)]', bracket: '#e879f9' },
-    cyan:   { text: 'text-cyan-100',    focus: 'focus:bg-cyan-500/20 focus:shadow-[0_0_20px_-5px_rgba(34,211,238,0.5)]',    bracket: '#22d3ee' },
+    blue:   { text: 'text-blue-200',   focus: 'focus:border-blue-400 focus:shadow-[0_0_15px_rgba(59,130,246,0.3)]',   bracket: '#60a5fa' },
+    green:  { text: 'text-emerald-200', focus: 'focus:border-emerald-400 focus:shadow-[0_0_15px_rgba(16,185,129,0.3)]', bracket: '#34d399' },
+    purple: { text: 'text-purple-200',  focus: 'focus:border-purple-400 focus:shadow-[0_0_15px_rgba(168,85,247,0.3)]',  bracket: '#c084fc' },
+    orange: { text: 'text-accent-cyan',    focus: 'focus:border-accent-cyan focus:shadow-[0_0_15px_rgba(34,211,238,0.3)]',    bracket: '#22d3ee' },
+    pink:   { text: 'text-pink-200',    focus: 'focus:border-pink-400 focus:shadow-[0_0_15px_rgba(236,72,153,0.3)]',    bracket: '#f472b6' },
+    red:    { text: 'text-fuchsia-200', focus: 'focus:border-fuchsia-400 focus:shadow-[0_0_15px_rgba(217,70,239,0.3)]', bracket: '#e879f9' },
+    cyan:   { text: 'text-accent-cyan',    focus: 'focus:border-accent-cyan focus:shadow-[0_0_15px_rgba(34,211,238,0.3)]',    bracket: '#22d3ee' },
   };
 
   const currentTheme = themes[color] || themes.blue;
 
   // Bracket SVG Path Generator
   const bracketThickness = 2;
-  const bracketWidth = 10;
+  const bracketWidth = 8;
   
   return (
-    <div className="flex flex-col items-center gap-3 relative group/matrix">
+    <div className="flex flex-col items-center gap-3 relative group/matrix z-10">
       {label && (
         <motion.h3 
             layout
-            className="text-[10px] font-bold text-slate-500 tracking-[0.2em] uppercase"
+            className="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase mb-1"
         >
             {label}
         </motion.h3>
@@ -73,7 +73,7 @@ export const MatrixInput: React.FC<MatrixProps> = ({
       <LayoutGroup>
         <motion.div 
             layout
-            className="relative px-4 py-2 flex items-stretch"
+            className="relative px-3 py-1 flex items-stretch"
         >
             {/* Left Bracket */}
             <svg className="absolute left-0 top-0 h-full w-4 overflow-visible" preserveAspectRatio="none">
@@ -82,17 +82,16 @@ export const MatrixInput: React.FC<MatrixProps> = ({
                     fill="none" 
                     stroke={currentTheme.bracket} 
                     strokeWidth={bracketThickness}
-                    strokeOpacity={0.4}
-                    vectorEffect="non-scaling-stroke"
+                    strokeLinecap="round"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
                 />
             </svg>
 
             {/* Matrix Grid */}
             <div 
-                className="grid gap-2"
+                className="grid gap-2 mx-1"
                 style={{ gridTemplateColumns: `repeat(${cols}, minmax(min-content, 1fr))` }}
             >
             <AnimatePresence>
@@ -108,10 +107,10 @@ export const MatrixInput: React.FC<MatrixProps> = ({
                     <motion.div
                         layout
                         key={cellKey}
-                        initial={{ opacity: 0, scale: 0.8 }}
+                        initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     >
                         <input
                             type="text"
@@ -124,12 +123,14 @@ export const MatrixInput: React.FC<MatrixProps> = ({
                             className={`
                                 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14
                                 text-center text-sm sm:text-base md:text-lg 
-                                font-mono rounded-lg border border-transparent outline-none transition-all duration-200
-                                bg-slate-800/40 hover:bg-slate-800/80
+                                font-mono rounded-lg outline-none transition-all duration-300
+                                border border-white/5
+                                bg-slate-900/40 backdrop-blur-md
+                                hover:bg-white/10 hover:border-white/10
                                 ${currentTheme.text}
                                 ${editable ? 'cursor-text' : 'cursor-default'}
                                 ${editable ? currentTheme.focus : ''}
-                                ${isHighlighted ? '!bg-white/20 !text-white scale-110 shadow-lg ring-1 ring-white/30 z-10' : ''}
+                                ${isHighlighted ? '!bg-accent-cyan/20 !border-accent-cyan/50 !text-white scale-110 shadow-[0_0_15px_rgba(0,246,255,0.2)] z-10' : ''}
                             `}
                         />
                     </motion.div>
@@ -146,11 +147,10 @@ export const MatrixInput: React.FC<MatrixProps> = ({
                     fill="none" 
                     stroke={currentTheme.bracket} 
                     strokeWidth={bracketThickness}
-                    strokeOpacity={0.4}
-                    vectorEffect="non-scaling-stroke"
+                    strokeLinecap="round"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
                 />
             </svg>
         </motion.div>
