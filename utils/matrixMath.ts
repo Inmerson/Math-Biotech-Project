@@ -1,5 +1,4 @@
 
-
 import { MatrixData } from '../types';
 
 export const createMatrix = (rows: number, cols: number, initialValue = 0): MatrixData => {
@@ -51,11 +50,40 @@ export const getDeterminant = (m: MatrixData): number | null => {
   if (n === 1) return m[0][0];
   if (n === 2) return m[0][0] * m[1][1] - m[0][1] * m[1][0];
 
-  // Simple recursion for example (Laplace expansion on row 0)
-  let det = 0;
-  for (let j = 0; j < n; j++) {
-    det += Math.pow(-1, j) * m[0][j] * getDeterminant(getMinor(m, 0, j))!;
+  // Gaussian elimination (O(N^3))
+  // Clone to avoid mutation
+  const temp = m.map(row => [...row]);
+  let det = 1;
+
+  for (let i = 0; i < n; i++) {
+    // Find pivot
+    let pivotRow = i;
+    for (let j = i + 1; j < n; j++) {
+      if (Math.abs(temp[j][i]) > Math.abs(temp[pivotRow][i])) {
+        pivotRow = j;
+      }
+    }
+
+    // Check if singular (pivot is effectively zero)
+    if (Math.abs(temp[pivotRow][i]) < 1e-10) return 0;
+
+    // Swap rows
+    if (i !== pivotRow) {
+      [temp[i], temp[pivotRow]] = [temp[pivotRow], temp[i]];
+      det *= -1;
+    }
+
+    det *= temp[i][i];
+
+    // Eliminate other rows
+    for (let j = i + 1; j < n; j++) {
+      const factor = temp[j][i] / temp[i][i];
+      for (let k = i; k < n; k++) {
+        temp[j][k] -= factor * temp[i][k];
+      }
+    }
   }
+
   return det;
 };
 
