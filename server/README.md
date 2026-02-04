@@ -54,6 +54,34 @@ Start the production server:
 npm start
 ```
 
+### Docker Deployment
+
+Build and run with Docker:
+
+```bash
+# Build the image
+docker build -t math-biotech-api .
+
+# Run the container
+docker run -p 5000:5000 -e FRONTEND_URL=http://localhost:3000 math-biotech-api
+```
+
+Or use Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+## Testing
+
+Run the API test suite:
+
+```bash
+npm test
+```
+
+This will execute a comprehensive test of all API endpoints.
+
 ## API Endpoints
 
 ### Health Check
