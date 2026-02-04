@@ -66,22 +66,57 @@ export const getMinor = (m: MatrixData, row: number, col: number): MatrixData =>
 };
 
 export const getInverse = (m: MatrixData): MatrixData | null => {
-    const det = getDeterminant(m);
-    if (det === 0 || det === null) return null;
-    
-    const n = m.length;
-    const adjugate = createMatrix(n, n);
+  const n = m.length;
+  if (n !== m[0].length) return null;
 
-    for(let i=0; i<n; i++) {
-        for(let j=0; j<n; j++) {
-             const sign = ((i + j) % 2 === 0) ? 1 : -1;
-             const minorDet = getDeterminant(getMinor(m, i, j)) || 0;
-             // Transpose happens here: adj[j][i] instead of adj[i][j]
-             adjugate[j][i] = sign * minorDet; 
-        }
+  // Create augmented matrix [A | I]
+  const augmented: number[][] = m.map(row => [...row, ...Array(n).fill(0)]);
+  for (let i = 0; i < n; i++) {
+    augmented[i][n + i] = 1;
+  }
+
+  // Gaussian elimination
+  for (let i = 0; i < n; i++) {
+    // Find pivot
+    let pivotRow = i;
+    for (let j = i + 1; j < n; j++) {
+      if (Math.abs(augmented[j][i]) > Math.abs(augmented[pivotRow][i])) {
+        pivotRow = j;
+      }
     }
-    
-    return multiplyMatrixByScalar(adjugate, 1/det);
+
+    // Check if singular
+    if (Math.abs(augmented[pivotRow][i]) < 1e-10) return null;
+
+    // Swap rows
+    [augmented[i], augmented[pivotRow]] = [augmented[pivotRow], augmented[i]];
+
+    // Normalize pivot row
+    const pivot = augmented[i][i];
+    for (let j = i; j < 2 * n; j++) {
+      augmented[i][j] /= pivot;
+    }
+
+    // Eliminate other rows
+    for (let j = 0; j < n; j++) {
+      if (i !== j) {
+        const factor = augmented[j][i];
+        for (let k = i; k < 2 * n; k++) {
+          augmented[j][k] -= factor * augmented[i][k];
+        }
+      }
+    }
+  }
+
+  // Extract inverse matrix
+  const inverse = createMatrix(n, n);
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      inverse[i][j] = augmented[i][n + j];
+    }
+  }
+
+  return inverse;
 };
 
 export const replaceColumn = (matrix: MatrixData, colIndex: number, columnVector: number[]): MatrixData => {
