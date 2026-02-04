@@ -21,26 +21,45 @@ export const MatrixInput: React.FC<MatrixProps> = ({
     setEditValue({ key: `${r}-${c}`, val: data[r][c].toString() });
   };
 
-  const handleBlur = () => {
+  const commitEdit = () => {
+    if (!editValue || !onChange) {
+        setEditValue(null);
+        return;
+    }
+
+    const [r, c] = editValue.key.split('-').map(Number);
+    const val = editValue.val;
+    
+    let newValue = data[r][c];
+
+    const num = parseFloat(val);
+    if (!isNaN(num)) {
+        newValue = num;
+    } else if (val === '') {
+        newValue = 0;
+    }
+
+    if (newValue !== data[r][c]) {
+        const newData = data.map(row => [...row]);
+        newData[r][c] = newValue;
+        onChange(newData);
+    }
+
     setEditValue(null);
+  };
+
+  const handleBlur = () => {
+    commitEdit();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+        e.currentTarget.blur();
+    }
   };
 
   const handleChange = (r: number, c: number, val: string) => {
     setEditValue({ key: `${r}-${c}`, val });
-    
-    if (!onChange) return;
-    
-    // Allow typing "-", ".", etc. without reverting immediately
-    const num = parseFloat(val);
-    if (!isNaN(num)) {
-        const newData = data.map(row => [...row]);
-        newData[r][c] = num;
-        onChange(newData);
-    } else if (val === '') {
-        const newData = data.map(row => [...row]);
-        newData[r][c] = 0;
-        onChange(newData);
-    }
   };
 
   const themes = {
@@ -120,6 +139,7 @@ export const MatrixInput: React.FC<MatrixProps> = ({
                             readOnly={!editable}
                             onFocus={() => editable && handleFocus(rIndex, cIndex)}
                             onBlur={handleBlur}
+                            onKeyDown={handleKeyDown}
                             onChange={(e) => handleChange(rIndex, cIndex, e.target.value)}
                             className={`
                                 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14
