@@ -1,36 +1,88 @@
 # Math Biotech
 
-Professional mobile application powered by **Project Inmersion**.
+A mobile-first learning application for mathematical workflows used in biotechnology studies.
 
-## 🚀 Features
-- **Native Mobile Experience:** Built with Capacitor for Android & iOS.
-- **AI-Powered:** Integrated with advanced AI analysis.
-- **Secure:** Local data storage and privacy-focused design.
-- **Web API:** RESTful backend API for mathematical computations and exam tracking.
+The project combines a Capacitor-based mobile experience with a REST API for mathematical computation, matrix operations, and exam-performance tracking.
 
-## 📱 Installation
-1. Download the APK from the releases section.
-2. Install on your Android device.
-3. Enjoy!
+## Project goals
 
-## 🌐 Web API
+Math Biotech is designed to make quantitative biotechnology topics easier to explore by bringing calculations, structured explanations, and progress data into one application.
 
-The project includes a backend Web API server that provides:
-- Matrix operations (add, multiply, determinant, inverse, eigenvalues, etc.)
-- Exam performance tracking and statistics
-- RESTful endpoints for frontend integration
+## Features
 
-For API documentation and setup instructions, see [server/README.md](server/README.md).
+- Mobile application built with Capacitor for Android and iOS
+- Matrix addition and multiplication
+- Determinants, inverses, and eigenvalue calculations
+- Exam-performance tracking and statistics
+- REST API for frontend and external integrations
+- Local-data and privacy-oriented application design
+- AI-assisted analytical workflows
 
-### Quick Start API
+## Architecture
+
+```text
+Mobile application
+       │
+       ▼
+Frontend interface
+       │
+       ▼
+REST API server
+       │
+       ├── Mathematical operations
+       └── Exam tracking and statistics
+```
+
+Detailed backend documentation is available in [`server/README.md`](server/README.md).
+
+## Run the API locally
+
+### Requirements
+
+- Node.js
+- npm
+
+### Setup
 
 ```bash
-cd server
+git clone https://github.com/Inmerson/Math-Biotech-Project.git
+cd Math-Biotech-Project/server
 npm install
 npm run dev
 ```
 
-The API will be available at `http://localhost:5000`.
+The development API is available by default at:
+
+```text
+http://localhost:5000
+```
+
+## Mobile installation
+
+Android builds, when published, can be installed from the repository's Releases section.
+
+Before installing an APK outside an application store, review the release notes and verify that it was published from this repository.
+
+## Development status
+
+The application is under active development. Interfaces, endpoints, and installation steps may change as the project matures.
+
+## Roadmap
+
+- Expand biotechnology-oriented mathematical examples
+- Improve step-by-step explanations
+- Add clearer API request and response examples
+- Strengthen automated testing and continuous integration
+- Publish screenshots and a documented demonstration workflow
+
+## Responsible development
+
+Mathematical and AI-generated outputs should be independently checked before they are used in academic, laboratory, clinical, or professional decisions.
+
+## Author
+
+Developed by [Halil Ibrahim Ozturk](https://github.com/Inmerson).
 
 ---
-© 2026 Inmersion. All rights reserved.
+
+© 2026 Inmerson. All rights reserved.
