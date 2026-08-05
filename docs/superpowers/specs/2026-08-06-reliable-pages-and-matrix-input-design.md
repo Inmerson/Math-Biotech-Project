@@ -2,26 +2,27 @@
 
 ## Goal
 
-Restore reproducible GitHub Pages deployment and reduce unnecessary matrix-grid re-renders while preserving current user behavior.
+Restore reproducible GitHub Pages delivery and reduce unnecessary matrix-grid re-renders while preserving current user behavior.
 
 ## Architecture
 
-The project continues to deploy from the generated `dist` directory to the existing `gh-pages` branch. CI and deployment use the same Node.js version, lock file and verification command so local quality gates and production publishing do not drift.
+The repository already publishes GitHub Pages from the root of `main` in legacy branch mode. The application therefore produces a dedicated, browser-ready bundle in `site/`, which is served at `/Math-Biotech-Project/site/` without changing repository settings. CI and publishing use the same Node.js version, lock file and verification command so development checks and production output do not drift.
 
 Matrix cells keep temporary text locally while the user types. A validated numeric value is committed to the parent matrix only when editing ends through blur or Enter, reducing parent updates from one per keystroke to one per edit session.
 
 ## Components
 
-- `package-lock.json`: synchronized with `package.json`, including Tailwind PostCSS and current React Three Fiber versions.
-- `.github/workflows/ci.yml`: installs optional native packages from the lock file and runs typecheck, tests and build.
-- `.github/workflows/deploy.yml`: uses Node.js 22 and current Actions, verifies before publishing `dist` to `gh-pages`.
+- `package-lock.json`: synchronized with `package.json`, including Tailwind PostCSS and the current React Three Fiber version.
+- `tsconfig.json`: limits client typechecking to the client codebase; the independently managed `server/` project is excluded.
+- `.github/workflows/ci.yml`: installs optional native packages from the lock file and runs typecheck, tests and the production build.
+- `.github/workflows/deploy.yml`: verifies the application, builds the Pages-specific bundle, stores an artifact and commits generated `site/` files to `main`.
 - `components/MatrixInput.tsx`: local edit buffer with explicit commit behavior.
-- `components/MatrixInput.test.tsx`: regression tests for deferred updates and Enter-key commit.
+- `components/MatrixInput.test.tsx`: regression tests for deferred updates and Enter-key completion.
 
 ## Error handling
 
-Invalid intermediate text remains local during editing. Empty text commits as zero; other non-numeric text leaves the previous matrix value unchanged. Deployment stops before publishing whenever typecheck, tests or build fail.
+Invalid intermediate text remains local during editing. Empty text commits as zero; other non-numeric text leaves the previous matrix value unchanged. Publishing stops before changing `site/` whenever dependency installation, typecheck, tests or either production build fails.
 
 ## Verification
 
-A pull request must pass `npm run verify`. After merging, the Pages workflow must complete successfully and the public site must return the built application from the repository subpath.
+A pull request must pass `npm run verify`. After merging, the publishing workflow must build and commit `site/`; a subsequent authenticated repository commit activates the legacy Pages build. The public application is verified at `https://inmerson.github.io/Math-Biotech-Project/site/`.
