@@ -156,6 +156,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, currentModule, se
       {/* Sidebar Container */}
       <motion.div 
         className={`
+          framer-motion-sidebar
           fixed top-0 bottom-0 left-0 w-72 z-50
           md:top-4 md:bottom-4 md:left-4 md:w-64 md:rounded-2xl
           glass-panel
