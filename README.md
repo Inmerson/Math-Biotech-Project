@@ -1,6 +1,6 @@
-# Math Biotech
+# Inmerson • Personal Math & Biotech Lab
 
-Mathematics learning application for biotechnology students, designed to be published as a responsive web app, an installable PWA and native mobile packages from one shared codebase.
+A personal mathematics and biotechnology learning laboratory by Inmerson, designed to be published as a responsive web app, an installable PWA and native mobile packages from one shared codebase.
 
 The project combines interactive mathematical learning, biotechnology-oriented examples, three-dimensional visualizations and a REST API for deterministic calculations and study records.
 
