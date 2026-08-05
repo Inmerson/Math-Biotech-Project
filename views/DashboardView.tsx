@@ -28,6 +28,11 @@ import {
   LearningDestinationRef,
   searchLearningDestinations,
 } from '../data/learningCatalog';
+import {
+  BRAND_DESCRIPTION,
+  BRAND_NAME,
+  BRAND_TAGLINE,
+} from '../data/branding';
 
 interface ModuleConfig {
   id: ModuleType;
@@ -253,10 +258,13 @@ export const DashboardView: React.FC<DashboardProps> = ({ onSelectModule, onNavi
               <Dna size={28} className="text-white md:hidden" />
               <Dna size={40} className="hidden text-white md:block" />
             </div>
-            <h1 className="text-4xl font-black tracking-tighter text-white sm:text-5xl md:text-7xl">Math Biotech</h1>
+            <div>
+              <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.22em] text-accent-cyan sm:text-xs md:text-sm">{BRAND_TAGLINE}</p>
+              <h1 className="text-4xl font-black tracking-tighter text-white sm:text-5xl md:text-7xl">{BRAND_NAME}</h1>
+            </div>
           </div>
-          <p className="mt-4 max-w-2xl text-sm font-light leading-relaxed text-slate-400 md:ml-2 md:text-lg">
-            Interactive mathematical modeling for the <strong className="font-semibold text-slate-200">Warsaw University of Life Sciences</strong>. Search a concept or enter a module to learn through observation and interaction.
+          <p className="mt-4 max-w-3xl text-sm font-light leading-relaxed text-slate-400 md:ml-2 md:text-lg">
+            {BRAND_DESCRIPTION} Search a concept or enter a module to learn through careful observation and interaction.
           </p>
         </motion.header>
 

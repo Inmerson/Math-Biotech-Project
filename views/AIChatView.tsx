@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Send, Settings, Sparkles, Key, AlertTriangle, Bot } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
+import { BRAND_SHORT_NAME } from '../data/branding';
 
 interface Message {
   id: string;
@@ -17,7 +18,7 @@ export const AIChatView: React.FC = () => {
   const [input, setInput] = useState('');
   const [showSettings, setShowSettings] = useState(() => !localStorage.getItem(STORAGE_KEY));
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', role: 'model', text: 'Hello! I am your Math Biotech Assistant. 🧬\n\nI can solve math problems or explain biological concepts. How can I help you today?' }
+    { id: '1', role: 'model', text: `Hello! I am your ${BRAND_SHORT_NAME} Assistant. 🧬\n\nI can solve math problems or explain biological concepts. How can I help you today?` }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
