@@ -8,6 +8,7 @@ import {
   Cylinder, Globe, ArrowUpRight, PieChart, Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { BRAND_SHORT_NAME } from '../data/branding';
 
 interface SidebarProps {
   currentView: ViewMode;
@@ -203,7 +204,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, currentModule, se
                         <Dna size={20} />
                     </div>
                     <div>
-                        <h1 className="font-bold text-white text-base leading-tight tracking-tight">Math Biotech</h1>
+                        <h1 className="font-bold text-white text-base leading-tight tracking-tight">{BRAND_SHORT_NAME}</h1>
                         <div className="text-[10px] font-mono text-accent-cyan uppercase tracking-wider mt-0.5 opacity-80">{currentModule.replace('_', ' ')}</div>
                     </div>
                 </div>
