@@ -241,6 +241,20 @@ Purpose: persist local course progress, lesson completion, saved formulas, and a
 
 The first release uses the existing local persistence approach unless project inspection identifies a correctness problem. Stored data is namespaced for Math-CS so it cannot collide with Math-Biotech data.
 
+### 8.9 Math Assistant
+
+Purpose: provide contextual help inside lessons and practice without inventing or replacing the approved curriculum.
+
+First-release capabilities:
+
+- Explain a displayed definition, formula, worked example, or solution step
+- Give hint-first guidance before revealing a complete solution
+- Retrieve the relevant approved topic context
+- Identify the course and topic used for the response
+- Present a clear unavailable state when the assistant service is not configured or cannot respond
+
+The assistant does not grade assessments, generate new official course content, or mutate progress automatically. It does not require an account and does not persist conversation history beyond the existing local behavior unless a later design explicitly changes that decision.
+
 ## 9. Content Data Model
 
 Course and topic content must be stored outside React presentation components.
@@ -286,8 +300,9 @@ Content IDs are stable, lowercase, and domain-neutral. UI state references IDs r
 5. Completed actions are sent to the progress store.
 6. The progress store persists namespaced data locally.
 7. Dashboard and course hubs derive progress summaries from stored records.
+8. The Math Assistant receives only the approved course/topic context needed for the current help request and does not mutate progress unless the learner completes an explicit tracked action.
 
-Content data, grading logic, persistence logic, and visual rendering remain separate so each can be tested independently.
+Content data, grading logic, persistence logic, assistant context selection, and visual rendering remain separate so each can be tested independently.
 
 ## 11. Migration Strategy
 
@@ -307,8 +322,9 @@ Content data, grading logic, persistence logic, and visual rendering remain sepa
 6. Refactor only components directly affected by domain coupling.
 7. Apply the approved Computational Notebook design system.
 8. Add the approved mathematics labs and assessments incrementally.
-9. Scan the target repository for biotechnology terminology and assets.
-10. Verify production builds and deployed behavior.
+9. Re-scope the assistant to approved Math-CS content.
+10. Scan the target repository for biotechnology terminology and assets.
+11. Verify production builds and deployed behavior.
 
 ## 12. Error Handling
 
@@ -318,6 +334,7 @@ Content data, grading logic, persistence logic, and visual rendering remain sepa
 - Singular matrices are identified before inverse operations.
 - Numeric grading uses explicit tolerances where exact floating-point equality is inappropriate.
 - Local-storage parsing failures fall back to a clean namespaced state without crashing the application.
+- Assistant configuration or response failures display a local, readable fallback and do not block lessons, practice, or exams.
 - Unsupported browser capabilities degrade to a readable static explanation where practical.
 - Errors must not reveal biotechnology-era labels or internal implementation details to learners.
 
@@ -343,6 +360,7 @@ Content data, grading logic, persistence logic, and visual rendering remain sepa
 - Matrix operations
 - Progress calculations
 - Persistence serialization and recovery
+- Assistant context selection and course/topic scoping
 
 ### Component tests
 
@@ -350,6 +368,7 @@ Content data, grading logic, persistence logic, and visual rendering remain sepa
 - Lesson-state transitions
 - Correct rendering of validation errors
 - Quiz feedback and result persistence
+- Assistant hint and unavailable states
 - Responsive navigation behavior where practical
 
 ### Integration tests
@@ -359,6 +378,7 @@ Content data, grading logic, persistence logic, and visual rendering remain sepa
 - Save and remove a formula
 - Resume from persisted state
 - Navigate between both courses and their labs
+- Request assistant help from a lesson and verify that the correct topic context is used
 
 ### End-to-end smoke tests
 
@@ -366,6 +386,7 @@ Content data, grading logic, persistence logic, and visual rendering remain sepa
 - Dashboard, both course hubs, labs, practice, exams, and progress pages open
 - No broken routes or missing production assets
 - Mobile navigation remains functional
+- Lessons remain usable when the assistant is unavailable
 
 ### Migration checks
 
@@ -390,18 +411,20 @@ Content data, grading logic, persistence logic, and visual rendering remain sepa
 The first release is accepted when:
 
 1. `Inmerson/Math-CS` exists as a public standalone repository.
-2. The application builds successfully from a clean checkout.
-3. The visible product identity is Inmerson Math-CS.
-4. Dashboard, Math I, Math II, Math Lab, Practice, Exams, and Progress are navigable.
-5. Both approved courses have structured topic hubs and representative usable lessons.
-6. Function Explorer, Matrix Lab, and Vector & Geometry Lab provide the approved first-release behaviors.
-7. Quiz grading and local progress persistence work correctly.
-8. Desktop and mobile layouts are usable.
-9. Automated tests and smoke checks pass.
-10. A repository-wide review finds no learner-facing biotechnology content or assets.
+2. The exact source commit used for migration is documented in the target repository.
+3. The application builds successfully from a clean checkout.
+4. The visible product identity is Inmerson Math-CS.
+5. Dashboard, Math I, Math II, Math Lab, Practice, Exams, and Progress are navigable.
+6. Every listed course topic has structured lesson content containing learning objectives, theory, at least one worked example, a computer-science connection, and a quiz.
+7. Function Explorer, Matrix Lab, and Vector & Geometry Lab provide the approved first-release behaviors.
+8. Quiz grading and local progress persistence work correctly.
+9. The Math Assistant is scoped to approved course content and lessons remain usable when it is unavailable.
+10. Desktop and mobile layouts are usable.
+11. Automated tests and smoke checks pass.
+12. A repository-wide review finds no learner-facing biotechnology content or assets.
 
 ## 17. Implementation Boundaries
 
 Implementation should favour adaptation over a rewrite. Existing components are reused when they have domain-neutral responsibilities and acceptable structure. Domain-coupled components may be split into focused units, but unrelated architectural modernization is deferred.
 
-Each implementation phase must keep the application buildable and testable. Content conversion, visual redesign, interactive labs, and final migration cleanup should be delivered as distinct, reviewable groups of changes.
+Each implementation phase must keep the application buildable and testable. Content conversion, visual redesign, interactive labs, assistant re-scoping, and final migration cleanup should be delivered as distinct, reviewable groups of changes.
