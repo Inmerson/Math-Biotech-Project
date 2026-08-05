@@ -54,7 +54,6 @@ export const AIChatView: React.FC = () => {
       if (!text) {
         throw new Error("No response generated.");
       }
-
       setMessages(prev => [...prev, { id: Date.now().toString(), role: 'model', text: text }]);
 
     } catch (error: any) {
@@ -167,6 +166,7 @@ export const AIChatView: React.FC = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                aria-label="Ask a math question"
                 placeholder="Ask a math question or topic..."
                 className="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-sm font-medium"
                 disabled={isLoading}
