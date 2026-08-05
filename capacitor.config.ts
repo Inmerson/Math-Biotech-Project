@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.inmersion.mathbiotech',
-  appName: 'Math Biotech',
+  appName: 'Inmerson Lab',
   webDir: 'dist'
 };
 
